@@ -1,10 +1,17 @@
 import lume from "lume/mod.ts";
 import plugins from "./plugins.ts";
+import { DeepPartial, SiteOptions } from "lume/core.ts";
 
-const site = lume({
+const config: DeepPartial<SiteOptions> = {
   src: "./src",
-  location: new URL("https://agustinramirodiaz.github.io/theme-simple-blog/"),
-});
+};
+
+const base_path = Deno.env.get("BASE_PATH");
+if (base_path) {
+  config.location = new URL(base_path);
+}
+
+const site = lume(config);
 
 site.use(plugins());
 

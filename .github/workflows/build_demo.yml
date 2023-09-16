@@ -21,9 +21,16 @@ jobs:
         uses: denoland/setup-deno@v1
         with:
           deno-version: v1.x
-
+      - name: Gather base path
+        env:
+          BASE_PATH: ${{ github.event.repository.name }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          url=$(gh api "repos/$GITHUB_REPOSITORY/pages" --jq '.html_url')
+          echo "BASE_PATH=$url" >> $GITHUB_ENV
       - name: Build site
-        run: deno task build
+        run: |
+          BASE_PATH=$BASE_PATH deno task build
 
       - name: Setup Pages
         uses: actions/configure-pages@v2
